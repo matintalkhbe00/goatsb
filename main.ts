@@ -16,6 +16,7 @@ async function action(headers: any): Promise<boolean> {
 
 async function getNextTime(headers: any): Promise<number> {
   const res = await fetch("https://api-mission.goatsbot.xyz/missions/user", {
+    method:'GET',
     headers,
   });
 

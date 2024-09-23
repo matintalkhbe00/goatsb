@@ -1,22 +1,22 @@
+import axios from 'axios';
+
 type CustomHeaders = Record<string, string>;
 type AuthTokenAndPhone = { token: string; phone: string };
 
 let totalReward = 0;
 
 async function action(headers: CustomHeaders): Promise<boolean> {
-  const res = await fetch(
+  const res = await axios.post(
     "https://dev-api.goatsbot.xyz/missions/action/66db47e2ff88e4527783327e",
-    {
-      method: "POST",
-      headers,
-    }
+    {},
+    { headers }
   );
 
   return res.status === 201;
 }
 
 async function getNextTime(headers: CustomHeaders): Promise<number> {
-  const res = await fetch("https://api-mission.goatsbot.xyz/missions/user", {
+  const res = await axios.get("https://api-mission.goatsbot.xyz/missions/user", {
     headers,
   });
 
@@ -24,8 +24,7 @@ async function getNextTime(headers: CustomHeaders): Promise<number> {
     return 20000000000000;
   }
 
-  const data = await res.json();
-  return data["SPECIAL MISSION"][0]["next_time_execute"];
+  return res.data["SPECIAL MISSION"][0]["next_time_execute"];
 }
 
 function delay(ms: number): Promise<void> {

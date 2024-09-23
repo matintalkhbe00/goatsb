@@ -49,6 +49,7 @@ async function handleToken(authToken: string): Promise<void> {
   const headers: Record<string, string> = { Authorization: `Bearer ${authToken}` };
   let nextTime = await getNextTime(headers);
   let rewardsCount = 0; // شمارش جوایز
+  let totalRewards = 0; // جمع کل جوایز
 
   while (true) {
     const now = Math.floor(Date.now() / 1000);
@@ -57,7 +58,10 @@ async function handleToken(authToken: string): Promise<void> {
       const result = await action(headers);
       if (result) {
         rewardsCount += 200; // هر بار که عمل موفقیت‌آمیز باشد، 200 به شمارش جوایز اضافه می‌شود
-        console.log(`Success: Action to earn was successfully completed with token ${authToken}. Total rewards: ${rewardsCount}`);
+        totalRewards += 200; // به جمع کل جوایز اضافه می‌شود
+        console.log(`Success: Action to earn was successfully completed with token ${authToken}.`);
+        console.log(`Total rewards for this token: ${rewardsCount}`);
+        console.log(`Total rewards accumulated: ${totalRewards}`);
         nextTime = await getNextTime(headers);
         console.log(`Success: Got new nextTime with token ${authToken}: ${nextTime}`);
       } else {
@@ -90,7 +94,6 @@ const authTokens: string[] = [
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlZjQzNTc1MDIzMDkwNjNkODc4YzRhIiwiaWF0IjoxNzI3MDkxMzg2LCJleHAiOjE3MjcxNzc3ODYsInR5cGUiOiJhY2Nlc3MifQ.cvwvcxBhjINWq60gptGGRqIBjoUTeYfUAEATHWq-_5g",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlZjQ0MmU1MDIzMDkwNjNkODkwNzJmIiwiaWF0IjoxNzI3MDkxNTc0LCJleHAiOjE3MjcxNzc5NzQsInR5cGUiOiJhY2Nlc3MifQ.Uj17uaarYLo6j1buP5FtoeHzBkuv5XYrtFTQFfmuemo",
 ]
-
 makeMoney(authTokens);
 
 console.log("Executed: Started...");

@@ -1,63 +1,3 @@
-let totalReward = 0;
-
-async function action(headers) {
-  const res = await fetch(
-    "https://dev-api.goatsbot.xyz/missions/action/66db47e2ff88e4527783327e",
-    {
-      method: "POST",
-      headers,
-    }
-  );
-
-  return res.status === 201;
-}
-
-async function getNextTime(headers) {
-  const res = await fetch("https://api-mission.goatsbot.xyz/missions/user", {
-    headers,
-  });
-
-  if (res.status !== 200) {
-    return 20000000000000;
-  }
-
-  const data = await res.json();
-  return data["SPECIAL MISSION"][0]["next_time_execute"];
-}
-
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function handleToken(authToken, phoneNumber) {
-  const headers = { Authorization: `Bearer ${authToken}` };
-  let nextTime = await getNextTime(headers);
-
-  while (true) {
-    const now = Math.floor(Date.now() / 1000);
-
-    if (now >= nextTime) {
-      const result = await action(headers);
-      if (result) {
-        totalReward += 200;
-        console.log(`Success: Action to earn was successfully completed with phone number ${phoneNumber}`);
-        console.log(`Total Reward: ${totalReward}`);
-        nextTime = await getNextTime(headers);
-        console.log(`Success: Got new nextTime with phone number ${phoneNumber}: ${nextTime}`);
-      } else {
-        console.log(`Failed: Action to earn failed with phone number ${phoneNumber}`);
-      }
-    }
-
-    await delay(1000);
-  }
-}
-
-async function makeMoney(authTokensAndPhones) {
-  const promises = authTokensAndPhones.map(({ token, phone }) => handleToken(token, phone));
-  await Promise.all(promises);
-}
-
 const authTokensAndPhones = [
     { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlZjQ0MmU1MDIzMDkwNjNkODkwNzJmIiwiaWF0IjoxNzI3MDg2MTU5LCJleHAiOjE3MjcxNzI1NTksInR5cGUiOiJhY2Nlc3MifQ.eUrmRQhBtBq-uH0S1RoOfSsoRo6hCaunWVnFW8A6F6Q", phone: "09059549183" },
     { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlN2ZhYzI2M2Y3Mzg1MGY4YjJjYTRiIiwiaWF0IjoxNzI3MDg3MjQzLCJleHAiOjE3MjcxNzM2NDMsInR5cGUiOiJhY2Nlc3MifQ._5dKgndhahz5eCGjOqcF9qngi8kLq3k6cjOTnY2vmqk", phone: "09025967864" },
@@ -75,7 +15,3 @@ const authTokensAndPhones = [
     // { token: "", phone: "" },
     // بقیه توکن‌ها
   ];
-
-makeMoney(authTokensAndPhones);
-
-console.log("Executed: Started...");

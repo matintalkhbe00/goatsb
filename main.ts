@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 let totalReward = 0; // متغیری برای نگهداری مقدار کل ریوارد
 
 async function action(headers: any): Promise<boolean> {

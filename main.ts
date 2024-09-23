@@ -1,9 +1,9 @@
-type Headers = { [key: string]: string };
+type CustomHeaders = Record<string, string>;
 type AuthTokenAndPhone = { token: string; phone: string };
 
 let totalReward = 0;
 
-async function action(headers: Headers): Promise<boolean> {
+async function action(headers: CustomHeaders): Promise<boolean> {
   const res = await fetch(
     "https://dev-api.goatsbot.xyz/missions/action/66db47e2ff88e4527783327e",
     {
@@ -15,7 +15,7 @@ async function action(headers: Headers): Promise<boolean> {
   return res.status === 201;
 }
 
-async function getNextTime(headers: Headers): Promise<number> {
+async function getNextTime(headers: CustomHeaders): Promise<number> {
   const res = await fetch("https://api-mission.goatsbot.xyz/missions/user", {
     headers,
   });
@@ -33,7 +33,7 @@ function delay(ms: number): Promise<void> {
 }
 
 async function handleToken(authToken: string, phoneNumber: string) {
-  const headers = { Authorization: `Bearer ${authToken}` };
+  const headers: CustomHeaders = { Authorization: `Bearer ${authToken}` };
   let nextTime = await getNextTime(headers);
 
   while (true) {

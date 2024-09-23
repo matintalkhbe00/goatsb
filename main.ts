@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
 
+let totalRewards = 0; // جمع کل جوایز در سطح کل برنامه
+
 async function action(headers: Record<string, string>): Promise<boolean> {
   try {
     const res = await fetch(
@@ -10,12 +12,7 @@ async function action(headers: Record<string, string>): Promise<boolean> {
       }
     );
 
-    if (!res.ok) {
-      console.error(`Action request failed: ${res.status} ${res.statusText}`);
-      return false;
-    }
-
-    return true;
+    return res.ok; // اگر درخواست موفق بود، true برمی‌گرداند
   } catch (error) {
     console.error('Error in action:', error);
     return false;
@@ -49,7 +46,6 @@ async function handleToken(authToken: string): Promise<void> {
   const headers: Record<string, string> = { Authorization: `Bearer ${authToken}` };
   let nextTime = await getNextTime(headers);
   let rewardsCount = 0; // شمارش جوایز
-  let totalRewards = 0; // جمع کل جوایز
 
   while (true) {
     const now = Math.floor(Date.now() / 1000);
@@ -94,6 +90,7 @@ const authTokens: string[] = [
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlZjQzNTc1MDIzMDkwNjNkODc4YzRhIiwiaWF0IjoxNzI3MDkxMzg2LCJleHAiOjE3MjcxNzc3ODYsInR5cGUiOiJhY2Nlc3MifQ.cvwvcxBhjINWq60gptGGRqIBjoUTeYfUAEATHWq-_5g",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjZlZjQ0MmU1MDIzMDkwNjNkODkwNzJmIiwiaWF0IjoxNzI3MDkxNTc0LCJleHAiOjE3MjcxNzc5NzQsInR5cGUiOiJhY2Nlc3MifQ.Uj17uaarYLo6j1buP5FtoeHzBkuv5XYrtFTQFfmuemo",
 ]
+
 makeMoney(authTokens);
 
 console.log("Executed: Started...");
